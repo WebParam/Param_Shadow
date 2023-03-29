@@ -1,7 +1,6 @@
 
 // @ts-ignore
 // @ts-nocheck
-
 import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -84,6 +83,11 @@ export default function Home({ data }: { data: dataProps[] }) {
     { date: string; shortenedDate: string; voltage: number }[]
   >([]);
   const [eventTableData, setEventTableData] = useState<dataProps[]>([]);
+
+  <style>
+
+    
+  </style>
   useEffect(() => {
     const lngLatArray: number[][] = [];
     const latLngArray: [number, number][] = [];
@@ -104,14 +108,14 @@ export default function Home({ data }: { data: dataProps[] }) {
         .sort((a, b) => {
           return Number(a.captured) - Number(b.captured);
         })
-        .map((event:any) => {
+        .map((event) => {
           let lngLatCoords: number[] = [];
           let latLngCoords: [number, number] = [0, 1];
           console.log("eve", event)
           const temperatureObj = {
             date: dayjs(event.captured).format("MMM D, YYYY h:mm A"),
             shortenedDate: dayjs(event.captured).format("MM/DD/YYYY"),
-            temp: Number(event.temperature),
+            temp: Number(convertCelsiusToFahrenheit(event.temperature)),
           };
           temperatureDataArray.push(temperatureObj);
           const voltageObj = {
@@ -265,8 +269,9 @@ export default function Home({ data }: { data: dataProps[] }) {
   }, [data]);
 
 
-
-
+  interface row {
+    [row: { string }]: any;
+  }
 
   const columns = useMemo(
     () => [
@@ -296,7 +301,7 @@ export default function Home({ data }: { data: dataProps[] }) {
           {
             Header: "GPS Location",
             accessor: "gps_location",
-            Cell: (row:any) => {
+            Cell: (row) => {
               console.log("rp", row)
               return (
                 <span>
@@ -310,7 +315,7 @@ export default function Home({ data }: { data: dataProps[] }) {
           {
             Header: "Cell Tower Location",
             accessor: "tower_location",
-            Cell: (row:any) => {
+            Cell: (row) => {
               return (
                 <span>
                   {row.row.original.tower_location.latitude.toFixed(3)}
@@ -359,21 +364,8 @@ export default function Home({ data }: { data: dataProps[] }) {
     datasets: [
       {
         label: '',
-        data: [0,8000,12554,16504,19501,23342],
+        data: [0,1200,1700,2100,4100,2900],
         borderColor: 'rgb(255, 99, 132)',
-        // backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      
-    ],
-  };
-
-  const _data2 = {
-    labels,
-    datasets: [
-      {
-        label: '',
-        data: [0,1200,2501,6800,9500,13221],
-        borderColor: 'rgb(55, 99, 255)',
         // backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       
@@ -381,10 +373,10 @@ export default function Home({ data }: { data: dataProps[] }) {
   };
   
   const _doughnutData = {
-    labels: ['Sandton: Bike', 'Sandton: Vehicle', 'HydePark: Bike', 'HydePark: Vehicle', 'Rosebank: Bike', 'Rosebank: Vehicle'],
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
     datasets: [
       {
-        label: '% Allocation',
+        label: '# of Votes',
         data: [12, 19, 3, 5, 2, 3],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -439,31 +431,30 @@ export default function Home({ data }: { data: dataProps[] }) {
   // const _barData =[0,2,0,15,23,45,52];
   // const _barData2 =[0,0,0,0,0,0,63,78,104,95,62,45];
   const barData = {
-    labels:['May','Jun','Jul','Aug', 'Sept','Oct', 'Nov','Dec','Jan', 'Feb*', 'Mar', 'Apr*'],
+    labels:['Jan','Feb','Mar','Apr','May','June', 'July','Aug', 'Sep*','Oct*','Nov*'],
     datasets: [
       {
         label: 'Dataset 2',
-        data: [0,0,0,0,103,170,205,257,306,328,0,0],
+        data: [5,15,38,89,103,170,205,0,0,0,0],
         backgroundColor: 'rgba(33, 162, 235, 0.5)',
       },
       {
         label: 'Dataset 2',
-        data: [0,0,0,0,0,0,0,0,0,0,380],
+        data: [0,0,0,0,0,0,0,257,0,0,0],
         backgroundColor: 'rgba(219, 10, 91,0.5)',
       },
       {
         label: 'Dataset 2',
-        data: [0,0,0,0,0,0,0,0,0,0,0, 482],
+        data: [0,0,0,0,0,0,0,0,306,388,406],
         backgroundColor: 'rgba(144, 238, 144, 0.5)',
       },
     ],
   };
   //end bar graph
 
-
   return (
+<>
 
-    <>    
     <div className="container-scroller">
       <nav className="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
@@ -482,9 +473,9 @@ export default function Home({ data }: { data: dataProps[] }) {
             </li>
             <li className="nav-item  d-none d-lg-flex">
               {/* <a  href="#"> */}
-              {/* <Link className="nav-link" href="/campaigns">
+              <Link classNameName="nav-link" href="/campaigns">
                 Campaign
-                </Link> */}
+                </Link>
               {/* </a> */}
             </li>
             <li className="nav-item  d-none d-lg-flex">
@@ -782,480 +773,281 @@ export default function Home({ data }: { data: dataProps[] }) {
         {/* <!-- partial --> */}
         <div className="main-panel">
           <div className="content-wrapper">
-            {/* <div className="row">
-              <div className="col-sm-6">
-                <h3 className="mb-0 font-weight-bold">Kenneth Osborne</h3>
-                <p>Your last login: 21h ago from newzealand.</p>
-              </div>
-              <div className="col-sm-6">
-                <div className="d-flex align-items-center justify-content-md-end">
-                  <div className="mb-3 mb-xl-0 pr-1">
-                      <div className="dropdown">
-                        <button className="btn bg-white btn-sm dropdown-toggle btn-icon-text border mr-2" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i className="typcn typcn-calendar-outline mr-2"></i>Last 7 days
-                        </button>
-                        <div className="dropdown-menu" aria-labelledby="dropdownMenuSizeButton3" data-x-placement="top-start">
-                          <h6 className="dropdown-header">Last 14 days</h6>
-                          <a className="dropdown-item" href="#">Last 21 days</a>
-                          <a className="dropdown-item" href="#">Last 28 days</a>
-                        </div>
-                      </div>
-                  </div>
-                  <div className="pr-1 mb-3 mr-2 mb-xl-0">
-                    <button type="button" className="btn btn-sm bg-white btn-icon-text border"><i className="typcn typcn-arrow-forward-outline mr-2"></i>Export</button>
-                  </div>
-                  <div className="pr-1 mb-3 mb-xl-0">
-                    <button type="button" className="btn btn-sm bg-white btn-icon-text border"><i className="typcn typcn-info-large-outline mr-2"></i>info</button>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-            <div className="row  mt-3">
-              <div className="col-xl-4 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Campaigns by Media type</h4>
-                      <div className="col-sm-9 col-md-6 col-lg-5">
-                      <p ><span className="mt-1 mr-2 text-right" >Filter channel</span><FaFilter/> </p>
-                    </div>
-                    </div>
-                    <input type="text" className="form-control" placeholder="Type to search..." aria-label="search" aria-describedby="search"></input>
-                    
-                    <br/>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                          {/* <div className="col-lg-6">
-                            <div id="circleProgress6" className="progressbar-js-circle rounded p-3"></div>
-                          </div> */}
-                          <div className="col-lg-6 float-left">
-                          <h6 className="card-title mb-3">Motorycyle</h6>
-                            <ul className="session-by-channel-legend">
-                              {/* <li>
-                                <div>eToyota One(3)</div>
-                                <div>4(100%)</div>
-                              </li> */}
-                                <li>
-                                <div>Sanlam Sky</div>
-                                <div>12</div>
-                              </li>
-                              <li>
-                                <div>Sanlam Sanport</div>
-                                <div>12</div>
-                              </li>
-                              <li>
-                                <div>Sanlam Glacier</div>
-                                <div>2</div>
-                              </li>
-                              <li>
-                                <div>SHA Insurance</div>
-                                <div>7</div>
-                              </li>
-                              {/* <li>
-                                <div>UberZA(3)</div>
-                                <div>6(70%)</div>
-                              </li> */}
-                            </ul>
-                          </div>
-                          <div className="col-lg-6 float-left">
-                          <h5 className="card-title mb-3">Vehicle</h5>
-                            <ul className="session-by-channel-legend">
-                              {/* <li>
-                                <div>eToyota One(3)</div>
-                                <div>4(100%)</div>
-                              </li> */}
-                              <li>
-                                <div>Sanlam Sanport</div>
-                                <div>12</div>
-                              </li>
-                              <li>
-                                <div>Sanlam Glacier</div>
-                                <div>2</div>
-                              </li>
-                              <li>
-                                <div>SHA Insurance</div>
-                                <div>7</div>
-                              </li>
-                              {/* <li>
-                                <div>UberZA(3)</div>
-                                <div>6(70%)</div>
-                              </li> */}
-                            </ul>
-                          
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>              
-              <div className="col-xl-5 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Campaign Activity</h4>
-                      <br/> <br/>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                        <div style={{width:"100%"}} >
-                          {/* <TempChart tempData={tempData} /> */}
-                          <Bar options={barOptions} data={barData} />
-                          <small>*estimated</small>
-
-                        </div>
-                          {/* <div className="col-sm-12">
-                            <div className="d-flex justify-content-between mb-4">
-                              <div>Uptime</div>
-                              <div className="text-muted">195 Days, 8 hours</div>
-                            </div>
-                            <div className="d-flex justify-content-between mb-4">
-                              <div>First Seen</div>
-                              <div className="text-muted">23 Sep 2019, 2.04PM</div>
-                            </div>
-                            <div className="d-flex justify-content-between mb-4">
-                              <div>Collected time</div>
-                              <div className="text-muted">23 Sep 2019, 2.04PM</div>
-                            </div>
-                            <div className="d-flex justify-content-between mb-4">
-                              <div>Memory space</div>
-                              <div className="text-muted">168.3GB</div>
-                            </div>
-                            <div className="progress progress-md mt-4">
-                              <div className="progress-bar bg-success" role="progressbar" 
-                              // style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
-                              ></div>
-                            </div>
-                          </div> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-3 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Geographic data</h4>
-                      <i className="typcn typcn typcn-chevron-left"></i>
-                      <i className="typcn typcn typcn-chevron-right"></i>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                         
-                          <div className="col-12 mt-4">
-                            <div className="d-md-flex mb-2">
-                              <div className="mr-md-5 mb-2">
-                                <h4 className="mb-1"><i className="typcn typcn-globe-outline mr-1"></i>Rosebank, Sandton (15 drivers)</h4>
-                                <h1 style={{fontSize:"3em"}} className="float-left text-primary font-weight-bold"><i className="typcn typcn-weather-partly-sunny mr-1"></i></h1>
-                                <h3 className="float-left text-primary mt-3 font-weight-bold">22&deg;C </h3>
-                                <h3 className="float-left text-primary mt-3 ml-3 font-weight-bold">26H/13L <i className="typcn typcn-thermometer mr-1"></i></h3>
-                              </div>
-                              {/* <Doughnut data={_data}/> */}
-                            </div>
-                            
-                          </div> 
-                          <div className="col-12">
-                            <div className="d-md-flex mb-2">
-                              <div className="mr-md-5 mb-2">
-                                <h4 className="mb-1"><i className="typcn typcn-globe-outline mr-1"></i>Hyde park, Sandton (19 drivers)</h4>
-                                <h1 style={{fontSize:"3em"}} className="float-left text-primary font-weight-bold"><i className="typcn typcn-weather-partly-sunny mr-1"></i></h1>
-                                <h3 className="float-left text-primary mt-3 font-weight-bold">22&deg;C </h3>
-                                <h3 className="float-left text-primary mt-3 ml-3 font-weight-bold">26H/13L <i className="typcn typcn-thermometer mr-1"></i></h3>
-                              </div>
-                              {/* <Doughnut data={_data}/> */}
-                            </div>
-                            
-                          </div> 
-                          <div className="col-12">
-                            <div className="d-md-flex mb-4">
-                              <div className="mr-md-5">
-                                <h4 className="mb-1"><i className="typcn typcn-globe-outline mr-1"></i>Sandton City, Sandton (16 drivers)</h4>
-                                <h1 style={{fontSize:"3em"}} className="float-left text-primary font-weight-bold"><i className="typcn typcn-weather-sunny mr-1"></i></h1>
-                                <h3 className="float-left text-primary mt-3 font-weight-bold">20&deg;C </h3>
-                                <h3 className="float-left text-primary mt-3 ml-3 font-weight-bold">26H/13L <i className="typcn typcn-thermometer mr-1"></i></h3>
-                              </div>
-                              {/* <Doughnut data={_data}/> */}
-                            </div>
-                            
-                          </div>                      
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-
-
 
             <div className="row">
-            <div className="col-xl-3 d-flex grid-margin stretch-card">
+              <div className="col-lg-7 d-flex grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
                     <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3"><i className="typcn typcn-eye mr-1"></i> Impressions</h4>
+                      <h4 className="card-title mb-3">Consolidated report by campaign</h4>
                     </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                         
-                          <div className="col-12">
-                            <div className="d-md-flex mb-4">
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Total impressions</h5>
-                                <h1 className="text-primary mb-1 font-weight-bold">23,342</h1>
+                    <div className="table-responsive">
+                      <table className="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face30.png" alt="profile image"> */}
+                                <div>
+                                  <div> Campaign</div>
+                                  <div className="font-weight-bold mt-1">Sanlam Glacier</div>
+                                </div>
                               </div>
-                              <div>
-                                <button type="button" className="btn btn-xs btn-light mr-1">Day</button>
-                                <button type="button" className="btn btn-primary btn-xs mr-1">Week</button>
-                                <button type="button" className="btn btn-xs btn-light">Month</button>
+                            </td>
+                            <td>
+                            From
+                            <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                           
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face31.png" alt="profile image"> */}
+                                <div>
+                                  <div> Company</div>
+                                  <div className="font-weight-bold  mt-1">Sanlam Sanport</div>
+                                </div>
                               </div>
-                            </div>
+                            </td>
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                           
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face32.png" alt="profile image"> */}
+                                <div>
+                                  <div> Company</div>
+                                  <div className="font-weight-bold  mt-1">Sanlam Sky </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
                             
-                            <Line options={options} data={_data}/>
-                          </div> 
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>             
-              <div className="col-xl-3 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3"><i className="typcn typcn-world mr-1"></i>Distance</h4>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                        <div className="col-12">
-                            <div className="d-md-flex mb-4">
-
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Total Kms covered</h5>
-                                <h1 className="text-secondary mb-1 font-weight-bold">13,221</h1>
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face33.png" alt="profile image"> */}
+                                <div>
+                                  <div> Company</div>
+                                  <div className="font-weight-bold  mt-1">SHA Insurance </div>
+                                </div>
                               </div>
-                              <div>
-                                <button type="button" className="btn btn-xs btn-primary btn-light mr-1">Day</button>
-                                <button type="button" className="btn btn-primary btn-xs mr-1">Week</button>
-                                <button type="button" className="btn btn-xs btn-light">Month</button>
-                              </div>
-                            </div>
-                            <Line options={options} data={_data2}/>
-                          </div>
-                        </div>
-                      </div>
+                            </td>
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                          
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col-xl-3 d-flex grid-margin stretch-card">
+              <div className="col-lg-5 d-flex grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
                     <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3"><i className="typcn typcn-chart-pie mr-1"></i> Allocation</h4>
+                      <h4 className="card-title mb-3">Complaints</h4>
                     </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="d-md-flex mb-4">
-                             
-                              <div className="mr-md-5">
-                                <h5 className="mb-1">Current allocation</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">100%</h1>
+                    <div className="table-responsive">
+                      <table className="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face30.png" alt="profile image"> */}
+                                <div>
+                                  <div> Campaign</div>
+                                  <div className="font-weight-bold mt-1">Sanlam Glacier</div>
+                                </div>
                               </div>
-                            </div>
-                            <div className="ml-5" style={{height:"200px"}}>
-                            <Doughnut data={_doughnutData}/>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-3 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div>
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3"><i className="typcn typcn-group mr-1"></i>Visibility</h4>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="d-md-flex mb-4">
-                            
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Active boards</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">52</h1>
-                              </div>
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Total Drivers</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">21</h1>
-                              </div>
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Total Riders</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">31</h1>
-                              </div>
-                            </div>
-                            {/* <Line options={options} data={_data}/> */}
-                            {/* <Doughnut data={_doughnutData}/> */}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-                  <div>
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3"><i className="typcn typcn-chart-line mr-1"></i>Effeciency</h4>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="d-md-flex mb-4">
-                            
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Completion</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">67%</h1>
-                              </div>
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Effectiveness</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">82%</h1>
-                              </div>
-                              <div className="mr-md-5 mb-4">
-                                <h5 className="mb-1">Effeciency</h5>
-                                <h1 className="text-warning mb-1 font-weight-bold">78%</h1>
-                              </div>
+                            </td>
+                            <td>
+                            From
+                            <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                           
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
                               
-                            </div>
-                            {/* <Line options={options} data={_data}/> */}
-                            {/* <Doughnut data={_doughnutData}/> */}
-                          </div>
-                        </div>
-                      </div>
+                             <input type="checkbox" checked/>
+                            </td>
+                        
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face30.png" alt="profile image"> */}
+                                <div>
+                                  <div> Campaign</div>
+                                  <div className="font-weight-bold mt-1">Sanlam Glacier</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                            From
+                            <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                           
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                             <input type="checkbox" checked/>
+                            </td>
+                        
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face30.png" alt="profile image"> */}
+                                <div>
+                                  <div> Campaign</div>
+                                  <div className="font-weight-bold mt-1">Sanlam Glacier</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                            From
+                            <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                           
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                             <input type="checkbox" checked/>
+                            </td>
+                        
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face30.png" alt="profile image"> */}
+                                <div>
+                                  <div> Campaign</div>
+                                  <div className="font-weight-bold mt-1">Sanlam Glacier</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                            From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                           
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                             <input type="checkbox" checked/>
+                            </td>
+                        
+                          </tr>
+                          <tr>
+                         
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
                     </div>
-                  </div>
-
-
-                  
                   </div>
                 </div>
               </div>
-
             </div>
-
-
-
             <div className="row">
-            
-              <div className="col-xl-12 d-flex grid-margin stretch-card">
+              <div className="col-lg-7 d-flex grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
                     <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Buffer zones</h4>
-                      <div className="col-md-4 float-right">
-                      <button type="button" className="float-right btn btn-sm btn-primary ml-2">Johannesburg</button>
-                      <button type="button" className="float-right btn btn-sm btn-light">Cape town</button>
-                      </div>
-                    </div>
-                    <div className="row mt-4">
-                      <div className="col-12" style={{height:"500px"}}>
-                    
-                      <div className={styles.container}>
-     
-                        <main className={styles.main}>
-                        
-                          <div className={styles.grid}>
-                            {/* <TempChart tempData={tempData} /> */}
-                          </div>
-                          <div className={styles.map}>
-                            <MapWithNoSSR
-                              coords={lngLatCoords}
-                              lastPosition={lastPosition}
-                              markers={latLngMarkerPositions}
-                              latestTimestamp={latestTimestamp}
-                            />
-                          </div>
-                        
-                        </main>
-                      
-                      </div>
-                     
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* <div className="col-xl-3 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Card Title</h4>
-                    </div>
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="mb-5">
-                          <div className="mr-1">
-                            <div className="text-info mb-1">
-                              Total Earning
-                            </div>
-                            <h2 className="mb-2 mt-2 font-weight-bold">287,493$</h2>
-                            <div className="font-weight-bold">
-                              1.4%  Since Last Month
-                            </div>
-                          </div>
-                          
-                          <div className="mr-1">
-                            <div className="text-info mb-1">
-                              Total Earning
-                            </div>
-                            <h2 className="mb-2 mt-2  font-weight-bold">87,493</h2>
-                            <div className="font-weight-bold">
-                              5.43%  Since Last Month
-                            </div>
-                          </div>
-                        </div>
-                        <canvas id="barChartStacked"></canvas>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
-              
-            </div>
-
-
-            <div className="row">
-              <div className="col-lg-12 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Impressions / Distance / Budget</h4>
+                      <h4 className="card-title mb-3">Activity</h4>
                     </div>
                     <div className="row">
                       <div className="col-lg-9">
                         <div className="d-sm-flex justify-content-between">
                           <div className="dropdown">
                             <button className="btn bg-white btn-sm dropdown-toggle btn-icon-text pl-0" type="button" id="dropdownMenuSizeButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Thu,24 Nov 2022 05:00 - Thu,24 Nov 2022 14:00
+                                Mon,1 Oct 2019 - Tue,2 Oct 2019
                             </button>
                             <div className="dropdown-menu" aria-labelledby="dropdownMenuSizeButton4" data-x-placement="top-start">
                               <h6 className="dropdown-header">Mon,17 Oct 2019 - Tue,25 Oct 2019</h6>
@@ -1275,25 +1067,237 @@ export default function Home({ data }: { data: dataProps[] }) {
                         </div>
                       </div>
                       <div className="col-lg-3">
-                      <div>
+                      <div >
                           <div className="d-flex justify-content-between mb-3">
-                            <div className="text-success font-weight-bold">Distance</div>
+                            <div className="text font-weight-bold">Selected Campaigns</div>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">Sanlam Sky</div>
+                            <input type="checkbox" checked/>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">Sanlam Glacier</div>
+                            <input type="checkbox"/>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">Sanlam Sanport</div>
+                            <input type="checkbox"/>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">SHA</div>
+                            <input type="checkbox"/>
+                          </div>
+                          
+                        </div>
+                        <div className="mt-4">
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="text-success font-weight-bold">Impressions</div>
                           </div>
                           <div className="d-flex justify-content-between mb-3">
                             <div className="font-weight-medium">Last week</div>
-                            <div className="text-muted">520 km</div>
+                            <div className="text-muted">56,8K</div>
                           </div>
                           <div className="d-flex justify-content-between mb-3">
                             <div className="font-weight-medium">This week</div>
-                            <div className="text-muted">206 km</div>
+                            <div className="text-muted">15.3K</div>
                           </div>
                           <div className="d-flex justify-content-between mb-3">
                             <div className="font-weight-medium">30 day peak  (Tuesday 5th)</div>
-                            <div className="text-muted">189 km</div>
+                            <div className="text-muted">17.1K </div>
                           </div>
                           <div className="d-flex justify-content-between mb-3">
-                            <div className="font-weight-medium">Total distance</div>
-                            <div className="text-muted">1683 km</div>
+                            <div className="font-weight-medium">Total impressions</div>
+                            <div className="text-muted">168.3K</div>
+                          </div>
+                          
+                        </div>
+                        {/* <hr> */}
+                    
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          
+              <div className="col-lg-5 d-flex grid-margin stretch-card">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="d-flex flex-wrap justify-content-between">
+                      <h4 className="card-title mb-3">Activity By Campaign</h4>
+                    </div>
+                    <div className="table-responsive">
+                      <table className="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face30.png" alt="profile image"> */}
+                                <div>
+                                  <div> Campaign</div>
+                                  <div className="font-weight-bold mt-1">Sanlam Glacier</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                    
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                              <input type="checkbox" checked/>
+                             </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">``
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face31.png" alt="profile image"> */}
+                                <div>
+                                  <div> Company</div>
+                                  <div className="font-weight-bold  mt-1">Sanlam Sanport</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                    
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                              <input type="checkbox" checked/>
+                             </td>
+                          
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face32.png" alt="profile image"> */}
+                                <div>
+                                  <div> Company</div>
+                                  <div className="font-weight-bold  mt-1">Sanlam Sky </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                    
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                             <input type="checkbox" checked/>
+                            </td>
+                      
+                          </tr>
+                          <tr>
+                            <td>
+                              <div className="d-flex">
+                                {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face33.png" alt="profile image"> */}
+                                <div>
+                                  <div> Company</div>
+                                  <div className="font-weight-bold  mt-1">SHA Insurance </div>
+                                </div>
+                              </div>
+                            </td>
+                           
+                            <td>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                    
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                            <td>
+                              
+                              <input type="checkbox" checked/>
+                             </td>
+                          </tr>
+                          <tr>
+   
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div className="row">
+            <div className="col-lg-7 d-flex grid-margin stretch-card">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="d-flex flex-wrap justify-content-between">
+                      <h4 className="card-title mb-3">Budget</h4>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-9">
+                        <div className="d-sm-flex justify-content-between">
+                          <div className="dropdown">
+                            <button className="btn bg-white btn-sm dropdown-toggle btn-icon-text pl-0" type="button" id="dropdownMenuSizeButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Mon,1 Oct 2019 - Tue,2 Oct 2019
+                            </button>
+                            <div className="dropdown-menu" aria-labelledby="dropdownMenuSizeButton4" data-x-placement="top-start">
+                              <h6 className="dropdown-header">Mon,17 Oct 2019 - Tue,25 Oct 2019</h6>
+                              <a className="dropdown-item" href="#">Tue,18 Oct 2019 - Wed,26 Oct 2019</a>
+                              <a className="dropdown-item" href="#">Wed,19 Oct 2019 - Thu,26 Oct 2019</a>
+                            </div>
+                          </div>
+                          <div>
+                            <button type="button" className="btn btn-sm btn-primary mr-2">Today</button>
+                            <button type="button" className="btn btn-sm btn-light mr-2">Week</button>
+                            <button type="button" className="btn btn-sm btn-light">Month</button>
+                          </div>
+                        </div>
+                        <div className="chart-container mt-4">
+                          {/* <canvas id="ecommerceAnalytic"></canvas> */}
+                          <TempChart tempData={tempData} />
+                        </div>
+                      </div>
+                      <div className="col-lg-3">
+                        <div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="text font-weight-bold">Selected Campaigns</div>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">Sanlam Sky</div>
+                            <input type="checkbox" checked/>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">Sanlam Glacier</div>
+                            <input type="checkbox"/>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">Sanlam Sanport</div>
+                            <input type="checkbox"/>
+                          </div>
+                          <div className="d-flex justify-content-between mb-3">
+                            <div className="font-weight-medium">SHA</div>
+                            <input type="checkbox"/>
                           </div>
                           
                         </div>
@@ -1324,80 +1328,12 @@ export default function Home({ data }: { data: dataProps[] }) {
                   </div>
                 </div>
               </div>
-            </div>
 
-
-            <div className="row">
-              <div className="col-lg-4 d-flex grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-wrap justify-content-between mb-4">
-                      <h4 className="card-title mb-3">Targets</h4>
-                    </div>
-                    <div className="mt-2">
-                      <div className="d-flex justify-content-between">
-                        <small>Impressions</small>
-                        <small>80.5%</small>
-                      </div>
-                      <div className="progress progress-md  mt-2">
-                        <div className="progress-bar bg-secondary" role="progressbar" 
-                         style={{width: "80%"}}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="d-flex justify-content-between">
-                        <small>Effeciency</small>
-                        <small>78.2%</small>
-                      </div>
-                      <div className="progress progress-md  mt-2">
-                        <div className="progress-bar bg-warning" role="progressbar" 
-                        style={{width: "78%"}}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="d-flex justify-content-between">
-                        <small>Complaints</small>
-                        <small>100% (0)</small>
-                      </div>
-                      <div className="progress progress-md mt-2">
-                        <div className="progress-bar bg-success" role="progressbar" 
-                         style={{width: "100%"}}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="d-flex justify-content-between">
-                        <small>Conversions</small>
-                        <small>not configured</small>
-                      </div>
-                      <div className="progress progress-md mt-2">
-                        <div className="progress-bar" role="progressbar" 
-                         style={{width: "0%"}}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="d-flex justify-content-between">
-                        <small>Budget</small>
-                        <small>39%</small>
-                      </div>
-                      <div className="progress progress-md mt-2">
-                        <div className="progress-bar bg-error" role="progressbar" 
-                         style={{width: "39%"}}
-                        ></div>
-                      </div>
-                    </div>
-                    {/* <canvas id="salesTopChart"></canvas> */}
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-8 d-flex grid-margin stretch-card">
+              <div className="col-lg-5 d-flex grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
                     <div className="d-flex flex-wrap justify-content-between">
-                      <h4 className="card-title mb-3">Project status</h4>
+                      <h4 className="card-title mb-3">Budget By Campaign</h4>
                     </div>
                     <div className="table-responsive">
                       <table className="table">
@@ -1413,24 +1349,22 @@ export default function Home({ data }: { data: dataProps[] }) {
                               </div>
                             </td>
                             <td>
-                              Budget
-                              <div className="font-weight-bold  mt-1">55,000 ZAR </div>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                          
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
                             </td>
                             <td>
-                              Status
-                              <div className="font-weight-bold text-success  mt-1">68% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div className="font-weight-bold  mt-1">07 Nov 2022</div>
-                            </td>
-                            <td>
-                              <button type="button" className="btn btn-sm btn-secondary">view detail</button>
-                            </td>
+                              
+                              <input type="checkbox" checked/>
+                             </td>
                           </tr>
                           <tr>
                             <td>
-                              <div className="d-flex">
+                              <div className="d-flex">``
                                 {/* <img className="img-sm rounded-circle mb-md-0 mr-2" src="images/faces/face31.png" alt="profile image"> */}
                                 <div>
                                   <div> Company</div>
@@ -1439,20 +1373,18 @@ export default function Home({ data }: { data: dataProps[] }) {
                               </div>
                             </td>
                             <td>
-                              Budget
-                              <div className="font-weight-bold  mt-1">58,000 ZAR  </div>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                          
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
                             </td>
                             <td>
-                              Status
-                              <div className="font-weight-bold text-success  mt-1">70% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div className="font-weight-bold  mt-1">08 Nov 2022</div>
-                            </td>
-                            <td>
-                              <button type="button" className="btn btn-sm btn-secondary">view detail</button>
-                            </td>
+                              
+                              <input type="checkbox" checked/>
+                             </td>
                           </tr>
                           <tr>
                             <td>
@@ -1465,20 +1397,18 @@ export default function Home({ data }: { data: dataProps[] }) {
                               </div>
                             </td>
                             <td>
-                              Budget
-                              <div className="font-weight-bold  mt-1">35,000 ZAR</div>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                          
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
                             </td>
                             <td>
-                              Status
-                              <div className="font-weight-bold text-success  mt-1">87% </div>
-                            </td>
-                            <td>
-                              Deadline
-                              <div className="font-weight-bold  mt-1">11 Nov 2022</div>
-                            </td>
-                            <td>
-                              <button type="button" className="btn btn-sm btn-secondary">view detail</button>
-                            </td>
+                              
+                              <input type="checkbox" checked/>
+                             </td>
                           </tr>
                           <tr>
                             <td>
@@ -1491,19 +1421,28 @@ export default function Home({ data }: { data: dataProps[] }) {
                               </div>
                             </td>
                             <td>
-                              Budget
-                              <div className="font-weight-bold  mt-1">65,000 ZAR </div>
+                              From
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
+                            </td>
+                          
+                            <td>
+                              To
+                              <div className="font-weight-bold  mt-1">  <input style={{border:"none"}} type="date"/>   </div>
                             </td>
                             <td>
-                              Status
-                              <div className="font-weight-bold text-success  mt-1">75% </div>
+                              
+                             <input type="checkbox" checked/>
+                            </td>
+                          </tr>
+                          <tr>   
+                            <td>
+                              <button type="button" className="btn btn-sm btn-secondary">export csv</button>
                             </td>
                             <td>
-                              Deadline
-                              <div className="font-weight-bold  mt-1">26 Nov 2022</div>
+                              <button type="button" className="btn btn-sm btn-secondary">view report</button>
                             </td>
                             <td>
-                              <button type="button" className="btn btn-sm btn-secondary">view detail</button>
+                              <button type="button" className="btn btn-sm btn-secondary"> download report</button>
                             </td>
                           </tr>
                         </tbody>
@@ -1522,7 +1461,41 @@ export default function Home({ data }: { data: dataProps[] }) {
         </div>
       </div>
     </div>
-  
+
+    {/* <div classNameName={styles.container}> */}
+      {/* <Head>
+        <title>Geolocation</title>
+        <meta name="description" content="Generated by create next app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main classNameName={styles.main}>
+        <h1 classNameName={styles.title}>Shadow v2.12</h1>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/> */}
+        {/* <div classNameName={styles.map}>
+          <MapWithNoSSR
+            coords={lngLatCoords}
+            lastPosition={lastPosition}
+            markers={latLngMarkerPositions}
+            latestTimestamp={latestTimestamp}
+          />
+        </div> */}
+        {/* <div classNameName={styles.grid}>
+          <TempChart tempData={tempData} />
+        </div> */}
+        {/* <div classNameName={styles.grid}>
+          <VoltageChart voltageData={voltageData} />
+        </div> */}
+        {/* <div classNameName={styles.grid}>
+          <EventTable columns={columns} data={eventTableData} />
+        </div>
+      </main>
+      <footer classNameName={styles.footer}></footer>
+    </div> */}
     </>
   );
 }
